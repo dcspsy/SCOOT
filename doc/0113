@@ -1,0 +1,9 @@
+0113
+
+node - flow mean = sum(link-flow mean) 
+link-flow mean = func(detector-flow mean)
+	1.可能非线性
+	2.各方向不一致
+	3.线性计算存在负相关
+	4.观察L断面只有一个线圈,L1flow变化和L断面有不一致,推测有额外变量参与计算.
+	5.L断面flow变化和l1的occ值变化一致
