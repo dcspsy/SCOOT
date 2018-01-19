@@ -1,0 +1,489 @@
+3. ASTRID DATA BASE
+ASTRID 数据库
+3.1 Sources of Data
+数据来源
+
+
+3.1.1 Cells
+
+ASTRID is designed primarily to receive data from SCOOT traffic control
+ASTRID 被设计为首选接收SCOOT信号控制系统控制
+systems, but data can also be received from other sources. Each source of data is
+，但也可以从其他数据源接收数据。
+referred to as a cell, which often refers to a specific SCOOT computer but can
+每一个独立数据源，通常由特殊的SCOOT计算机构建，被称作一个cell，
+equally well mean an independent source of data. A cell is given a name consisting
+cell编码为一个两位数字
+of 2 digits.
+
+3.1.2 Messages
+
+Each cell supplies a stream of messages that contain the data required to be stored
+每个cell发送包含请求的数据的信息(Messages)到数据库中。
+in the database. The messages for ASTRID are in an amended format from the
+ASTRID的 每条Messages 采用固定框架格式，需要包含：
+standard SCOOT messages, but contain the same information. The following
+information is required for each message to be processed by ASTRID:
+
+(1) Date
+日期
+(2) Start time
+开始时刻
+(3) End time
+结束时刻
+(4) Message type
+消息类型
+(5) Site
+站点
+(6) Data value
+数值
+(7) Fault indicator
+故障提示
+A message can contain more than one data value.
+一条Message 可以包含多个数值。
+
+
+3.2 Database Organisation
+数据库构架
+
+3.2.1 Configuration
+配置
+
+The parameters which specify to ASTRID what data types to collect by default and
+at what resolution are set up by STC during the installation of ASTRID.
+ASTRID在安装时配置的STC，指定了默认情况下收集的数据类型和颗粒度的参数.
+Configuration of other data types is described in section 4.
+其他数据类型的配置描述在第四章。
+
+3.2.2 Site
+站点
+
+The ASTRID database is organised by site which means the location for which the
+ASTRID 数据库由收集数据的site构成
+data is collected. Sites are one of several types:
+site有下面几种类型
+(1) An area represents a whole cell. Because data can be collected for more than
+一个区域(area)代表一个cell，收集的数据由于数据收集的范围多于一个cell，会多于
+one cell, there may be more than one area.
+一个区域(area)。
+(2) A region is a SCOOT region, or an equivalent for a non-SCOOT data
+source.
+子区(region)是一个SCOOT子区，或者等价一个非SCOOT数据源。
+(3) A node is a SCOOT node, or an equivalent for a non-SCOOT data source.
+节点(node) 是一个SCOOT节点，或者等价一个非SCOOT数据源。
+(4) A stage is a SCOOT stage, or an equivalent for a non-SCOOT data source.
+阶段(stage)是一个SCOOT阶段，或者等价一个非SCOOT数据源。
+(5) A link is a SCOOT link, or an equivalent for a non-SCOOT data source.
+连线(link)是一个SCOOT 连线，或者等价一个非SCOOT数据源。
+(6) A detector is a SCOOT detector, or an equivalent for a non-SCOOT data
+source.
+检测器(detector)是一个SCOOT 检测器，，或者等价一个非SCOOT数据源。
+(7) A route is a set of links which has been defined to ASTRID by the user. A
+路由(route)是一组被ASTRID用户指定的连线(link)。
+route may consist of links representing a particular route through the
+路由可以表示连线(link)的之间通过路网关联有特定的联系
+network, or it may be a set of disconnected links which the user wishes to
+consider together.
+，或用户希望一组连线放在一起考虑。
+(8) A group is sub-area or equivalent group of equipment.
+组(group) 是一个分区或等价于一个设备组。
+(9) A car park is a single car park. It may have a number of in and out counts.
+停车场(car park) 是一个单独的停车场，有进出的车辆数数据。
+(10) A cnt is a count taken directly from a count source, not derived by the use of
+conversion factors.
+cnt 是一个从计数源获取的计数，不是转换得来的。
+
+3.2.3 Resolution
+颗粒度
+
+The time resolution of data (except the trend periods) can be configured as part of
+时间数据(除趋势周期以外)的颗粒度在安装ASTRID
+the initial installation of ASTRID. The values given here are typical values.
+时配置一个通用值作为默认值。
+Data are stored at one of three types of resolution
+数据以以下三个颗粒度存储模式进行存储
+(1) Data entering ASTRID are at high resolution. The exact resolution depends
+数据以细颗粒度写入ASTRID。 
+on the message being processed, but M02 messages are normally cyclic or at
+具体的颗粒度取决于消息(message)上被处理的数据，
+5-minute resolution, and M08 and M29 messages are cyclic. Data at their
+但M02消息通常是循环的(?)或采用5分钟颗粒度，M08，M29消息是循环的。
+resolution are stored for a few days, at most, as the storage requirements are
+当前颗粒度的数据只储存几天，至多(除非?)储存需求很大。
+very large. This resolution of data can be appropriate for analysing incidents
+这一颗粒度下的数据可以用于分析事故
+or other effects on the network. The raw files are stored at this resolution .
+或其他对路网状况产生影响事件。原始文件以这个颗粒度存储。
+
+(2) Data are stored at medium resolution for the longer term. The time
+数据以中等颗粒度用来长时间储存
+resolution of 15 minutes is a compromise between detail of information and
+均衡考虑信息和存储需求，采用15分钟的颗粒度
+storage requirements. The profiles are stored at this resolution.
+配置文件以这个颗粒度存储。
+(3) Data at low resolution are divided into a few time periods per day, covering
+数据以粗颗粒度存储，
+peak and off-peak periods as a whole. Because the storage requirements are
+每天取覆盖(？区别)峰峰期的几个时间段
+so much less, data can be stored for years at this resolution. The trend files
+因为需要很少的储存成本，数据可以储存数年，
+are stored at this resolution.
+趋势数据以这个颗粒度存储。
+
+3.2.4 File types
+文件类型
+
+The files are organised as four separate file types which contain data at different
+resolutions and for different periods:
+文件系统由四种分别包含不同的颗粒度和统计周期的文件类型组成
+(1) Raw files contain raw data for the last few days only at high resolution.
+原始文件(Raw files)包含以细颗粒度储的存最近几天的原始数据。
+(2) Profiles files contain average data per weekday at a medium resolution.
+配置文件(Profiles files)包含以中等粒度储存的每个weekday(原语义里包含周一到周日)的平均数据。
+(3) Trend files contain data per day at low resolution.
+趋势文件(Trend file) 包含每天的粗粒度数据。
+(4) Bac files contain data per day at medium resolution.
+Bac文件(Bac file) 包含每天的粗粒度数据
+
+3.2.5 Records
+记录
+
+Each file contains records each of which contains the data for one period of time.
+每个文件包含一个若干条记录(records)，每条是一个统计周期的数据
+For example a profile file contains records for one site; each record in the file
+例如一个配置文件包含一个站点的数据,
+would contain one 15-minute period of data for the one site.
+文件中的每条记录包含一个站点15分钟的数据。
+
+3.2.6 Keys
+键
+A record is referenced with the following keys, although not all file types contain
+记录按照实际情况，参考如下的内容作为键(key)
+all these keys:
+
+(1) Date—the day, month and year of the date for which the record contains
+日期(Date) 每条记录包含日,月,年
+data. Typically the date is represented externally as yyyymmdd, so that, for
+格式通常采用 yyyymmdd
+example, 1 9 9 5 0 1 2 6 represents 26 January 1995. The reason for using
+19950126表示 1995年1月26日
+this formula is that it allows dates to be sorted conveniently.
+使用这样的时间格式可以方便日期数据排序。
+(2) Weekday—the day of the week, Monday to Sunday. Externally the
+Weekday 一周里的某天，从周一到周日。
+weekdays are represented by the first two letters of their name, so that MO
+represents Monday, etc.
+用那天的单词首二字母来代表，比如用MO表示周一(Monday)
+(3) The start time of the data period. Times are represented externally as hh:mm
+统计周期的开始时间。通常使用格式 hh:mm 24小时制。
+using the 24-hour clock, so that, for example, half past seven at night is
+represented as 19:30.
+比如用19:30 表示晚七点半。
+(4) The end time of the data period. This is represented in the same way as the
+统计周期的结束时间。格式和开始时间相同，
+start time. The end time of a period can extend to midnight, which is then
+represented as 24:00.
+结束时间可以包含午夜，用24:00表示.
+
+3.2.7 Items
+项
+(1) Data - All the data for one site corresponding to that date and time.
+数据 —— 一个站点在相应日期、时间的所有数据
+The actual format of the data in the files is not described here as the files are not
+因为文件不是由用户直接访问的，
+accessible directly by the user; instead data can be retrieved from the database by
+在此没有描述数据在文件中的实际格式；用户用检索数据的方式查看数据
+using the View command and is displayed in the form of a graph.
+并用View命令可视化
+
+3.2.8 Back Files and Day Files
+备份\还原 文件
+These files contain detailed information at the normal aggregation level of 15
+通常级别下，这些文件包含15分钟的详细信息 
+minutes. They all contain data in the same format; the differences are in the dates
+这些文件用同样的格式存储数据，不同的是数据关联的日期
+for which the data is relevant. A dayfile contains the latest incomplete day being
+一个dayfile 包含最近的不完整天通常是当前日期。
+processed, which will normally be the current day. The bacfile itself contains the
+bacfile除了包含和dayfile相同的数据，
+same data but for previous dates, usually containing all of the current month.
+还保留了当前月份内截止当前日期的数据。
+Bacfiles are archived at the start of each month; the archived bacfiles are more
+Bacfiles在每个月开始的时候开始存档；
+difficult to access but still exist in the database.
+虽然存在数据库中但存档文件更难直接访问。
+Each record contains the following information:
+每条记录包含如下信息
+(1) Date
+日期
+(2) Weekday
+Weekday
+(3) Start time
+开始时间
+(4) End time
+结束时间
+plus the following for each data type:
+为每个数据添加如下数据类型
+(5) Mean
+均值
+(6) Valid sample size (°Sc)
+有效样本率 (°Sc)？？
+(7) Fault sample size (%)
+无效样本率 (%)
+
+
+3.2.9 Trend files
+趋势文件
+
+The trend files contain aggregated data for previous days There are 7 different
+趋势文件包含聚合后的数据，
+aggregation periods, as identified by the start and end times, e.g.:
+有如下七个不同的聚合区间
+(1) 00:00 to 24:00
+(2) 00:00 to 07:00
+(3) 07:00 to 10:00
+(4) 10:00 to l6:00
+(5) 16:00 to 19:00
+(6) 19:00 to 24:00
+(7) 07:00 to 19:00
+This ensures that the trend files are relatively small. These periods cannot be
+changed.
+这种区间选取保障趋势文件足够小，并且边界不能改变。
+
+3.2.10 Profiles
+配置文件
+
+A site has a profile for each day of the week; each record in the profile contains the
+following information:
+每个站点在一周里的每天存储一个配置文件(Proflie);每个配置文件包含如下信息：
+(1) Weekday
+weekday
+(2) Start time
+开始时间
+(3) End time
+结束时间
+plus the following for each data type:
+为每个数据添加如下数据类型
+(4) Mean
+均值
+(5) Standard deviation (stdev)
+标准差
+(6) Sample size (count)
+样本容量
+
+3.3 Basic Data Types
+基本数据类型
+
+
+3.3.1 Introduction
+简介
+
+These data types are collected directly from messages and are stored in the
+这些数据直接从消息(messages)中获取并保存在 ASTRID 数据库。
+ASTRID database. ASTRID is not restricted to recording these data types; any
+ASTRID 不仅记录数据类型，
+information which can be taken from a message can be stored in the database
+如果期望的话，
+provided ASTRID is configured to do so.
+ASTRID可以将任何message中携带的信息保存在数据库中。
+
+3.3.2 Flow
+流量
+
+The M02 message gives SCOOT flow. It is measured in lpu/h and differs from
+M02 消息提供SCOOT流量数据。 此时的流量数据以lpu/h作为单位，
+actual flow in several respects:
+去别与真实流量有以下几点：
+• Because it is measured in lpu/h it should strictly be converted to vehicles with a
+因为流量的单位是lpu/h的，
+link-dependent (and possibly time-dependent) conversion factor.
+这里流量想转化为实际流量需要依赖link(也许是时间)的参数。
+• It is subject to the maximum queue; flow which is measured but which is
+flow存在最大队列限制，
+modelled as exceeding the maximum queue is not included.
+只有最大队列限制范围内的模拟流量(连续1？)
+• The modelled flow is retained from a previous cycle if the SCOOT detector is
+如果SCOOT设备用作检测拥堵，模拟流量将被从上一个周期保留，
+seen as congested.This is essential for the correct operation of the SCOOT
+这是为了SCOOT拥堵优化可以正常运转的必备操作，
+optimisers in congested conditions, but does mean that the flow values obtained
+而不是用于反应道路真实情况，不代表流量值真实存在。
+do not necessarily reflect the street in the circumstances.
+The F01 message gives a flow value based on count detector input
+F01消息提供基于计数设备输入的流量值。
+
+3.3.3 Stops
+停车次数
+The M02 message gives SCOOT stops, which represent the number of stops on
+M02消息提供SCOOT停车次数（stops），代表车辆在SCOOT连线上的停车次数 。
+the link as modelled by SCOOT. It is measured in lpu/h and is output by ASTRID
+in veh/h.
+以lpu/h作为输入计算，在ASTRID以veh/h输出
+
+3.3.4 Delay
+延误
+The M02 message gives SCOOT delay, which represents the delay on the link as
+M02消息提供SCOOT延误（delay），代表SCOOT连线模型上的延误值
+modelled by SCOOT. The value is in lpus and can be thought of as the average
+延误值由lpu值表示，可以认为是
+queue length on the link throughout the period. It is stored in ASTRID to a
+整个周期内连线上的平均队列长度。
+resolution of 0- l vehicles and is output in vehicles.
+在ASTRID中以0-1车辆（？？）储存，输出车辆数。
+
+3.3.5 Congestion
+拥堵
+The M02 message gives raw congestion, unprocessed by SCOOT. The term
+M02消息提供原始拥堵值(congestion),未被SCOOT加工。
+'congestion' in SCOOT is based on the concept of a congested interval; this is a
+'congestion' 是一个’拥挤的区间‘的表述；
+period of 4 seconds for which the detector (or any one of the detectors) on the link
+用来表示连线上的检测器（或其他任何检测器）被持续覆盖超过4秒
+is covered. The raw congestion is the total length of these congested intervals as a
+原始的拥堵值是这样的’拥挤的区间(连续1)‘的总长度（时长）
+proportion of the length of the period; it has not been processed by the SCOOT
+占整个周期的比例。这一数据未被SCOOT处理
+model. It is stored in ASTRID to a resolution of l% and is output in percent.
+在ASTRID中以1%的颗粒度存储，输出百分比。
+
+3.3.6 Saturation
+饱和度
+
+The M08 message gives the degree of saturation of a link as modelled by SCOOT.
+M08消息提供饱和度（saturation） 表示SCOOT连线上的饱和度
+It is output by ASTRID in percent.
+在ASTRID以百分比输出。
+
+
+3.3.7 Historic flow parameters
+历史流量参数
+
+The M45 message produces 4 parameters which are stored by ASTRID and can be
+M45消息产生4个由ASTRID生成并反馈到SCOOT的参数
+fed back into SCOOT. They enable SCOOT to produce a default profile when
+这些参数使SCOOT在检测器故障的时候产生一个配置我文件（profile）
+detectors are faulty and can be used instead of the default split and default offset
+用来替代默认的split和offset值
+values. The four values are: Historic cyclic flow, Historic green flow, Historic
+这四个参数是历史周期车流、历史绿灯车流、历史周期时长、历史绿灯时长。
+cycle length and Historic green length.
+
+3.3.8 Detector flow
+检测器流量
+
+The detector flow is a value for flow calculated by counting the number of
+检测器流量(detector flow)由检测器计算(计数)设备的开关量转化得出。
+transitions of the detector state from off to on. For detectors covering only one
+对于只覆盖一条车道(lane)的设备，
+lane it should give an accurate flow count; for other detectors it will give an
+给出的应该是一个确定的计数，对于其他情况
+underestimate depending on the amount of masking. This parameter is not suitable
+会给出一个被低估的值，取决于  。
+for use by the SCOOT model or optimisers but is used by the INGRID incident
+这个参数不适合用于SCOOT模式或优化器(拥堵优化器？) ，但
+detection system, and can be used wherever a value for flow is required which is
+适用于INGRID事件检测系统，并可以用于任何需要流量数据
+not influenced by the SCOOT model.
+并且不影响SCOOT模式的场景。
+
+3.3.9 Detector occupancy
+检测器占有率
+
+The detector occupancy is a value for the occupancy of a detector calculated by
+检测器占有率(detectoe occupancy) 是计算检测器
+taking the total number of quarter-seconds for which the detector is on as a
+percentage of the whole period.
+以1/4秒为单位在整个周期内占用的比例。
+
+3.3.10 Stage length
+阶段时长
+
+The stage length is the SCOOT stage length as derived from the M17 message.
+阶段时长(Stage Length)是M17消息中的 SCOOT阶段时长。
+This is the length of stage as demanded by SCOOT and does not take account of
+这个阶段时长是SCOOT计算后请求的时长，
+the occurrence or not on street of demand Dependent stages.
+不考虑事件和不在街道上的需求(?)。
+
+
+3.4 Derived Data Types
+派生数据类型
+
+3.4.1 Introduction
+简介
+These data types are not stored in the ASTRID database but are derived from data
+这些数据类型不储存在ASTRID数据库，而是从储存数据中派生的
+stored there by straightforward calculations. The user can access and display these
+用户可以像基本类型一样访问和展示
+data types in the same way as the basic data types.
+这些派生数据类型。
+
+3.4.2 Vehicle delay
+车辆延误
+
+The vehicle delay, or delay per vehicle, is obtained by dividing the delay by the
+车辆延误，或车均延误，通过区分流量数据得到
+flow, giving a value in seconds and eliminating the dependence on lpu factors. This
+每数秒依赖lpu的因子计算一个数据，
+is SCOOT's estimate of the delay suffered by a vehicle on the link.
+，通过SCOOT 估计连线上车辆的延误损失计算来的。
+
+3.4.3 Journey time
+The journey time is obtained by adding the vehicle delay to the cruise time. It gives
+SCOOT's estimate of the time for an average vehicle to travel the link. The cruise
+time can be entered in the ASTRID database as part of the installation process but
+is not automatically updated from the SCOOT value.
+3.4.4 Speed
+This is derived from the link length, the cruise time and the vehicle delay as
+follows:
+s
+l
+t d
+=
++
+3.6*
+( )
+where:
+s is the speed (km/h),
+l is the link length (m)
+t is the cruise time on the link (s),
+d is the vehicle delay on the link (s).
+3.4.5 Congestion index
+This is derived from the vehicle delay and the link cruise time as follows:
+ASTRID and INGRID User Guide 666/HS/16940/000
+HS16940_V32.doc Issue 30 Page 13
+c
+t d
+t
+=
+( + )
+where:
+c is the congestion index,
+t is the cruise time on the link(s),
+d is the vehicle delay on the link(s).
+The congestion index is a dimensionless measure of the delay on the link such that
+no delay gives a congestion index of 1, if the delay is equal to the cruise time the
+congestion index is 2 and so on with higher values of congestion index indicating
+greater levels of delay. In SCOOT terminology it is a measure of delay rather than
+congestion, but the term congestion index is used in a wider context.
+3.4.6 Vehicle occupancy
+This is derived by dividing the detector occupancy by the detector flow to give the
+average occupancy of a vehicle. It is output in milliseconds per vehicle (ms/veh).
+3.4.7 Lpu factor
+An estimate of the lpu factor is derived from the vehicle occupancy. It is output in
+lpus per vehicle (lpu/veh).
+3.5 Summary of Data Types
+code level message param units description
+flow link M02 p8 veh/h Flow
+stops link M02 p6 veh/h Stops
+del link M02 p7 veh Delay
+cong link M02 p10 % Congestion
+dsat link M08 p5 % Saturation
+hflwc link M45 p5 veh/h Historic cycle flow
+hflwg link M45 p7 veh/h Historic green flow
+hlenc link M45 p6 s Historic cycle length
+hleng link M45 p8 s Historic green length
+rflow det M29 p6 veh/h Det flow
+rocc det M29 p7 % Det occ
+slen stg M17 p5 s Stage length
+The parameters p5, p6 etc. represent the parameters in a SCOOT message.
