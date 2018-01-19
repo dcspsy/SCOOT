@@ -1,5 +1,7 @@
 3. ASTRID DATA BASE
 ASTRID 数据库
+
+
 3.1 Sources of Data
 数据来源
 
@@ -13,7 +15,7 @@ systems, but data can also be received from other sources. Each source of data i
 referred to as a cell, which often refers to a specific SCOOT computer but can
 每一个独立数据源，通常由特殊的SCOOT计算机构建，被称作一个cell，
 equally well mean an independent source of data. A cell is given a name consisting
-cell编码为一个两位数字
+cell编码为一个两位数字.
 of 2 digits.
 
 3.1.2 Messages
@@ -21,10 +23,10 @@ of 2 digits.
 Each cell supplies a stream of messages that contain the data required to be stored
 每个cell发送包含请求的数据的信息(Messages)到数据库中。
 in the database. The messages for ASTRID are in an amended format from the
-ASTRID的 每条Messages 采用固定框架格式，需要包含：
 standard SCOOT messages, but contain the same information. The following
+ASTRID的 每条Messages 采用固定框架格式，需要包含：
 information is required for each message to be processed by ASTRID:
-
+每条信息都必须被ASTRID加工以下内容
 (1) Date
 日期
 (2) Start time
@@ -59,7 +61,7 @@ Configuration of other data types is described in section 4.
 站点
 
 The ASTRID database is organised by site which means the location for which the
-ASTRID 数据库由收集数据的site构成
+ASTRID 数据库由收集数据的站点(Site)构成
 data is collected. Sites are one of several types:
 site有下面几种类型
 (1) An area represents a whole cell. Because data can be collected for more than
@@ -81,10 +83,10 @@ source.
 (7) A route is a set of links which has been defined to ASTRID by the user. A
 路由(route)是一组被ASTRID用户指定的连线(link)。
 route may consist of links representing a particular route through the
-路由可以表示连线(link)的之间通过路网关联有特定的联系
+路由可以表示某些的之间通过路网关联有特定的联系
 network, or it may be a set of disconnected links which the user wishes to
 consider together.
-，或用户希望一组连线放在一起考虑。
+，或用户希望一组连线放在一起考虑的连线(link)。
 (8) A group is sub-area or equivalent group of equipment.
 组(group) 是一个分区或等价于一个设备组。
 (9) A car park is a single car park. It may have a number of in and out counts.
@@ -107,7 +109,7 @@ Data are stored at one of three types of resolution
 on the message being processed, but M02 messages are normally cyclic or at
 具体的颗粒度取决于消息(message)上被处理的数据，
 5-minute resolution, and M08 and M29 messages are cyclic. Data at their
-但M02消息通常是循环的(?)或采用5分钟颗粒度，M08，M29消息是循环的。
+但M02消息通常是循环的或采用5分钟颗粒度，M08，M29消息是循环的。
 resolution are stored for a few days, at most, as the storage requirements are
 当前颗粒度的数据只储存几天，至多(除非?)储存需求很大。
 very large. This resolution of data can be appropriate for analysing incidents
@@ -124,9 +126,9 @@ storage requirements. The profiles are stored at this resolution.
 (3) Data at low resolution are divided into a few time periods per day, covering
 数据以粗颗粒度存储，
 peak and off-peak periods as a whole. Because the storage requirements are
-每天取覆盖(？区别)峰峰期的几个时间段
+每天取覆盖(？区分)峰峰期的几个时间段
 so much less, data can be stored for years at this resolution. The trend files
-因为需要很少的储存成本，数据可以储存数年，
+这种方式需要很少的储存成本，数据可以储存数年，
 are stored at this resolution.
 趋势数据以这个颗粒度存储。
 
@@ -143,7 +145,7 @@ resolutions and for different periods:
 (3) Trend files contain data per day at low resolution.
 趋势文件(Trend file) 包含每天的粗粒度数据。
 (4) Bac files contain data per day at medium resolution.
-Bac文件(Bac file) 包含每天的粗粒度数据
+Bac文件(Bac file) 包含每天的粗粒度数据.
 
 3.2.5 Records
 记录
@@ -271,9 +273,9 @@ plus the following for each data type:
 (6) Sample size (count)
 样本容量
 
+
 3.3 Basic Data Types
 基本数据类型
-
 
 3.3.1 Introduction
 简介
@@ -314,6 +316,7 @@ F01消息提供基于计数设备输入的流量值。
 
 3.3.3 Stops
 停车次数
+
 The M02 message gives SCOOT stops, which represent the number of stops on
 M02消息提供SCOOT停车次数（stops），代表车辆在SCOOT连线上的停车次数 。
 the link as modelled by SCOOT. It is measured in lpu/h and is output by ASTRID
@@ -429,61 +432,86 @@ is SCOOT's estimate of the delay suffered by a vehicle on the link.
 ，通过SCOOT 估计连线上车辆的延误损失计算来的。
 
 3.4.3 Journey time
+旅行时间
 The journey time is obtained by adding the vehicle delay to the cruise time. It gives
+旅行时间是(journey time)是延迟时间加上自由旅行时间.
 SCOOT's estimate of the time for an average vehicle to travel the link. The cruise
+SCOOT估计连线上的车辆平均时间.
 time can be entered in the ASTRID database as part of the installation process but
+自由旅行时间可以在安装ASTRID数据库时配置,
 is not automatically updated from the SCOOT value.
+SCOOT并不会更新自由旅行时间
+
+
 3.4.4 Speed
+速度
+
 This is derived from the link length, the cruise time and the vehicle delay as
+通过link的长度计算,自由旅行时间和车辆延误
 follows:
-s
-l
-t d
-=
-+
-3.6*
-( )
+s = 3.6*l/(t+d)
 where:
 s is the speed (km/h),
+速度(km/h)
 l is the link length (m)
+l 连线长度(m)
 t is the cruise time on the link (s),
+t 自由旅行时间(s)
 d is the vehicle delay on the link (s).
+d link上的车辆延误(s)
+
 3.4.5 Congestion index
+拥堵指数
 This is derived from the vehicle delay and the link cruise time as follows:
-ASTRID and INGRID User Guide 666/HS/16940/000
-HS16940_V32.doc Issue 30 Page 13
-c
-t d
-t
-=
-( + )
+通过车辆延误和连线上的自由旅行时间计算
+c = t/(t+d)
 where:
 c is the congestion index,
+c 是拥堵值
 t is the cruise time on the link(s),
+t 是连线的自由旅行时间
 d is the vehicle delay on the link(s).
+d 是车辆的延误时间
 The congestion index is a dimensionless measure of the delay on the link such that
+拥堵指数是对连线是上延误的一个无量纲的度量
 no delay gives a congestion index of 1, if the delay is equal to the cruise time the
+没有车辆延误时拥堵指数标记1,如果延误等于旅行时间
 congestion index is 2 and so on with higher values of congestion index indicating
+拥堵指数是2,以此类推拥堵指数越高代表越拥堵
 greater levels of delay. In SCOOT terminology it is a measure of delay rather than
+在SCOOT术语中,延误(delay)更加常用,但是拥堵指数
 congestion, but the term congestion index is used in a wider context.
+在日常使用中更加常见.
+
 3.4.6 Vehicle occupancy
+车辆占有率
 This is derived by dividing the detector occupancy by the detector flow to give the
+车辆占有率(Vehicle occupancy) 通过检测器流量计算检测器占有率,然后计算车辆的平均占有率
 average occupancy of a vehicle. It is output in milliseconds per vehicle (ms/veh).
+输出单位 ms(微秒)/veh(过车量)
+
 3.4.7 Lpu factor
+Lpu因子
 An estimate of the lpu factor is derived from the vehicle occupancy. It is output in
 lpus per vehicle (lpu/veh).
+通过检测器的车辆占有率计算Lpu因子(lpu) 输出单位 lpu/veh
+
 3.5 Summary of Data Types
-code level message param units description
-flow link M02 p8 veh/h Flow
-stops link M02 p6 veh/h Stops
-del link M02 p7 veh Delay
-cong link M02 p10 % Congestion
-dsat link M08 p5 % Saturation
-hflwc link M45 p5 veh/h Historic cycle flow
-hflwg link M45 p7 veh/h Historic green flow
-hlenc link M45 p6 s Historic cycle length
-hleng link M45 p8 s Historic green length
-rflow det M29 p6 veh/h Det flow
-rocc det M29 p7 % Det occ
-slen stg M17 p5 s Stage length
+数据类型总结
+
+code 	level 	message param 	units 	description
+flow 	link 	M02 	p8 		veh/h 	Flow
+stops 	link 	M02 	p6 		veh/h 	Stops
+del 	link 	M02 	p7 		veh 	Delay
+cong 	link 	M02 	p10 	% 		Congestion
+dsat 	link 	M08 	p5 		% 		Saturation
+hflwc 	link 	M45 	p5 		veh/h 	Historic cycle flow
+hflwg 	link 	M45 	p7 		veh/h 	Historic green flow
+hlenc 	link 	M45 	p6 		s 		Historic cycle length
+hleng 	link 	M45 	p8 		s 		Historic green length
+rflow 	det 	M29 	p6 		veh/h 	Det flow
+rocc 	det 	M29 	p7 		% 		Det occ
+slen 	stg 	M17 	p5 		s 		Stage length
+
 The parameters p5, p6 etc. represent the parameters in a SCOOT message.
+参数p5,p6等代表 SCOOT 的消息参数.
